@@ -49,7 +49,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 try:
     import dexutil
 except ImportError:                                       # pragma: no cover
-    dexutil = None
+    dexutil = None  # type: ignore[assignment]
 
 
 # ---------------------------------------------------------------------------

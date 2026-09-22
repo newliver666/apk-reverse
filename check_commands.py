@@ -543,7 +543,7 @@ def find_script_token(tokens):
     return None, 'no script argument'
 
 
-_WORKBENCH_INDEX = {}
+_WORKBENCH_INDEX: dict[str, set[str]] = {}
 
 
 def _workbench_names():

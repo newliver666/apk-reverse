@@ -32,7 +32,7 @@ import sys
 try:
     import yaml
 except ImportError:   # the skills CLI is the real authority; this is a local gate
-    yaml = None
+    yaml = None  # type: ignore[assignment]
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SKILLS_DIR = os.path.join(ROOT, 'skills')
@@ -46,7 +46,7 @@ NAMED_PATH_RE = re.compile(
 BARE_PATH_RE = re.compile(r'(?<![\w/])(?P<sub>references|scripts)/'
                           r'(?P<file>[A-Za-z0-9_\-]+\.(?:md|py|js))')
 
-fail = []
+fail: list[str] = []
 
 
 def read(path):
