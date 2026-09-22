@@ -24,7 +24,14 @@ name: ci
 
 on:
   push:
+    paths:
+      - '*.py'
+      - 'skills/apk-reverse/scripts/*.py'
   pull_request:
+      paths:
+      - '*.py'
+      - 'skills/apk-reverse/scripts/*.py'
+
 
 permissions:
   contents: read
@@ -49,9 +56,9 @@ jobs:
       PYTHONUTF8: "1"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -60,7 +67,7 @@ jobs:
         # it, `check_budget.py` falls back to characters/constant, and the two paths must agree.
         # Installing it here means CI exercises the real tokenizer path, and the unit test comparing
         # both paths runs instead of skipping.
-        run: python -m pip install --upgrade pip pytest tiktoken
+        run: python -m pip install --upgrade pytest tiktoken
 
       - name: Structural gate - repository layout
         run: python check_repo.py
