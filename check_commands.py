@@ -117,16 +117,15 @@ EXTERNAL_SCRIPTS = {
 # needs a reason, and the report prints them: an exclusion a reader can audit is not a
 # hole, whereas a silent one would be indistinguishable from a missed drift.
 QUOTED_COMMANDS = {
-    ('docs/tool-verification/FINDINGS.md',
-     'python scripts/sig_probe.py --live --pkg <pkg>'):
-        "FINDINGS.md quotes this command as the historical defect it records. It is "
-        "evidence about the drift, not an instruction a reader runs; the page's own text "
-        "says the script has no --pkg.",
+    ('docs/tool-verification/FINDINGS.md', 'python scripts/sig_probe.py --live --pkg <pkg>'):
+        ("FINDINGS.md quotes this command as the historical defect it records. It is "
+         "evidence about the drift, not an instruction a reader runs; the page's own text "
+         "says the script has no --pkg."),
     ('docs/tool-verification/EXTENSION-reconstruction.md',
      'python scripts/sig_probe.py --live --pkg <pkg>'):
-        "the same command appears in this pass's evidence file as the `--fix-report` "
-        "output that proves the checker catches it -- a reproduction of a defect, printed "
-        "with the fix beside it.",
+        ("the same command appears in this pass's evidence file as the `--fix-report` "
+         "output that proves the checker catches it -- a reproduction of a defect, printed "
+         "with the fix beside it."),
 }
 
 
@@ -768,7 +767,7 @@ def command_findings(doc_path, text, spec_cache, include_workbench):
 
         known = spec['flags']
         known_long = [f for f in known if f.startswith('--')]
-        unknown, positions, warnings = [], [], []
+        unknown, positions = [], []
         before = len(findings)
         expect_value = False
         after_ddash = False

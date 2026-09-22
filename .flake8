@@ -1,0 +1,19 @@
+# flake8 configuration for this repository.
+#
+# max-line-length is 120, not pep8's 79, because the tracked surface is
+# deliberately prose-heavy: scripts and gates carry long explanatory comments
+# and evidence-style strings, and the repository has never been formatted to
+# 79 columns. 120 is the envelope those lines already live in (only a handful
+# ever exceeded it), so this records the existing style instead of forcing a
+# repo-wide reformat that would bury every blame line.
+#
+# Everything else runs with defaults: no error codes are disabled. Run from
+# the repository root:
+#   flake8 *.py skills/apk-reverse/scripts/*.py
+#
+# Enforced in CI: the `lint` job in .github/workflows/ci.yml runs this exact
+# command alongside mypy, on a bare interpreter, so the configuration is
+# exercised in the poorest environment it must keep working in.
+
+[flake8]
+max-line-length = 120

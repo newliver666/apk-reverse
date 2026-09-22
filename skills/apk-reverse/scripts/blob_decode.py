@@ -41,7 +41,6 @@ from __future__ import annotations
 import argparse
 import base64
 import binascii
-import json
 import re
 import sys
 import time

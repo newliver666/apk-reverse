@@ -35,7 +35,6 @@ Pure standard library. Import it, or run it for a per-method dump:
 """
 
 import hashlib
-import struct
 import sys
 import zipfile
 

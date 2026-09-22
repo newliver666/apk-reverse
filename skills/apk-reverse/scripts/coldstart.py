@@ -90,8 +90,8 @@ class Device(object):
             base = ['adb']
         try:
             with open(path, 'wb') as fh:
-                r = subprocess.run(base + ['exec-out', 'screencap', '-p'],
-                                   stdout=fh, timeout=timeout)
+                subprocess.run(base + ['exec-out', 'screencap', '-p'],
+                               stdout=fh, timeout=timeout)
             size = os.path.getsize(path)
             if size < 8:
                 return -1
@@ -161,14 +161,14 @@ def main(argv):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__.split('Usage')[-1][:1200])
     ap.add_argument('--serial', help='adb serial (REQUIRED when several devices are '
-                                    'online, so the wrong one is not picked at random)')
+                                     'online, so the wrong one is not picked at random)')
     ap.add_argument('--pkg', required=True, help='package name')
     ap.add_argument('--activity', help='component to start (default: monkey/launcher)')
     ap.add_argument('--out', default='coldstart', help='output directory')
     ap.add_argument('--duration', type=float, default=14.0, help='seconds to capture')
     ap.add_argument('--interval', type=float, default=0.8, help='seconds between frames')
     ap.add_argument('--expect-activity', help='warn if the foreground activity is not '
-                                            'this (and not the package at all)')
+                                              'this (and not the package at all)')
     ap.add_argument('--no-su', action='store_true', help='never use device root')
     ap.add_argument('--keep-old', action='store_true',
                     help='do not clear existing screenshots in the output dir')
@@ -180,8 +180,8 @@ def main(argv):
 
     if not args.serial:
         r = run(['adb', 'devices'])
-        online = [l.split()[0] for l in (r.stdout or '').splitlines()[1:]
-                  if len(l.split()) >= 2 and l.split()[1] == 'device']
+        online = [ln.split()[0] for ln in (r.stdout or '').splitlines()[1:]
+                  if len(ln.split()) >= 2 and ln.split()[1] == 'device']
         if len(online) > 1:
             print('error: %d devices online (%s) and no --serial given. adb would '
                   'pick one at random and you would debug the wrong target.'
@@ -276,7 +276,7 @@ def main(argv):
         print('   %-32s %s' % (name, counts.get(name, 0)))
 
     m = re.findall(r'Displayed ([^:]+): \+([0-9]+)ms', open(log_path, encoding='utf-8',
-                                                           errors='replace').read())
+                                                            errors='replace').read())
     if m:
         print('\n== launch timing (logcat Displayed)')
         for comp, ms in m:

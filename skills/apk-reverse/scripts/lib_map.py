@@ -41,7 +41,6 @@ import os
 import re
 import subprocess
 import sys
-from collections import defaultdict
 
 E_MACHINE = {
     0x03: "x86", 0x3E: "x86_64", 0x28: "arm", 0xB7: "aarch64",
@@ -169,7 +168,8 @@ def main() -> int:
 
     # translation markers
     markers = sorted({p for p in entries if any(t in p.lower() for t in TRANSLATOR_MARKERS)})
-    app_archs = sorted({r["arch"] for r in rows if r["kind"] in ("apk-lib", "materialized") and r["arch"] not in ("?", "not-elf")})
+    app_archs = sorted({r["arch"] for r in rows if r["kind"] in ("apk-lib", "materialized")
+                        and r["arch"] not in ("?", "not-elf")})
     host_is_x86 = "x86" in dev_abi
     translated = bool(markers) or (host_is_x86 and any(x.startswith(("arm", "aarch64")) for x in app_archs))
 

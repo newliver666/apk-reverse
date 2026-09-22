@@ -92,7 +92,6 @@ def parse_body(raw, ctype):
 
 
 def print_waiting_help(url):
-    host = "127.0.0.1"
     print("[waiting] MCP server is not answering at %s" % url)
     print()
     print("The MT APK MCP must be started by hand in the MT UI (adb cannot start it):")

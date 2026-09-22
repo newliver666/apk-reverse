@@ -4,6 +4,9 @@
 #   * the repository's own structural gates: check_repo.py, check_refs.py,
 #     check_budget.py, check_routing.py, and check_commands.py when it is present
 #   * the pytest suite: tests/unit, tests/cli, tests/integration
+#   * lint, on one interpreter: mypy (config in mypy.ini) and flake8 (config in
+#     .flake8), over the same tracked surface as the local commands
+#     `mypy *.py skills/apk-reverse/scripts/*.py` and the flake8 equivalent
 #
 # WHAT THIS DOES NOT RUN, ON PURPOSE
 #   * anything needing a device, adb, frida, a rooted phone, a network peer or a
@@ -18,8 +21,8 @@
 #     rather than failing. Run it locally after downloading the sample.
 #
 # Coverage is therefore: static structure, documentation anchors, budget, command
-# references, pure parsers, CLI contracts and no-device flows. Nothing more is
-# claimed.
+# references, pure parsers, CLI contracts, typing/style lint and no-device flows.
+# Nothing more is claimed.
 name: ci
 
 on:
@@ -27,10 +30,14 @@ on:
     paths:
       - '*.py'
       - 'skills/apk-reverse/scripts/*.py'
+      - 'mypy.ini'
+      - '.flake8'
   pull_request:
-      paths:
+    paths:
       - '*.py'
       - 'skills/apk-reverse/scripts/*.py'
+      - 'mypy.ini'
+      - '.flake8'
 
 
 permissions:
@@ -95,3 +102,35 @@ jobs:
       - name: Summarise skipped and expected-failure coverage
         if: always()
         run: python -m pytest -q -ra --no-header -p no:cacheprovider 2>&1 | tail -n 40
+
+  lint:
+    # Static checks over the same tracked surface the local commands cover, so
+    # what passes locally cannot drift from what CI enforces. Both tools pick
+    # their configuration (mypy.ini, .flake8) up from the repository root
+    # automatically.
+    #
+    # The environment is deliberately bare: only mypy and flake8, no
+    # PyYAML/capstone/tiktoken/frida. That is the poorest environment the
+    # configuration must keep working in -- mypy.ini's ignore_missing_imports
+    # overrides exist for exactly those modules -- so CI exercises the
+    # fallbacks instead of a machine-local install hiding a regression.
+    #
+    # One interpreter, not the matrix: the checks are static, and the matrix's
+    # job is runtime behaviour, which lint does not observe.
+    name: lint (mypy + flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install lint dependencies
+        run: python -m pip install --upgrade mypy flake8
+
+      - name: mypy
+        run: mypy *.py skills/apk-reverse/scripts/*.py
+
+      - name: flake8
+        run: flake8 *.py skills/apk-reverse/scripts/*.py

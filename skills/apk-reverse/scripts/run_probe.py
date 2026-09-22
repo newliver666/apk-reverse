@@ -256,7 +256,7 @@ def main():
         else:
             if not args.pkg:
                 logger.line(host_ts() + ' FATAL --pkg is required when attaching '
-                                       '(or use --spawn with --pkg)')
+                                        '(or use --spawn with --pkg)')
                 return 3
             pid, raw = get_pid(adb, args.device, args.pkg)
             if pid is None:

@@ -37,7 +37,6 @@ Usage
 
 import argparse
 import hashlib
-import os
 import struct
 import sys
 

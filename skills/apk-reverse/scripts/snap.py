@@ -190,7 +190,8 @@ def main() -> int:
                 print("%-14s %s" % ("", os.path.join(workdir, tag + ".png")))
                 if same_run >= 2:
                     print("  -> %d identical samples in a row. This is a stall, not a slow operation." % (same_run + 1))
-                    print("     Stop waiting: inspect the image, or check the app is still alive and in the foreground.")
+                    print("     Stop waiting: inspect the image, or check the app is still "
+                          "alive and in the foreground.")
         if i < a.count - 1:
             time.sleep(max(0.0, a.interval))
 

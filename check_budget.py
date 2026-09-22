@@ -239,7 +239,6 @@ def check_hedging():
             if ln.strip() and not ln.startswith('|') and not ln.startswith('#')
             and not ln.startswith('---')]
     hedged = [(i + 1, ln.strip()) for i, ln in enumerate(lines) if HEDGE_RE.search(ln)]
-    imperative = [ln for ln in body if re.match(r'^\s*[-*]? *(\*\*)?[A-Z]', ln)]
     ratio = (len(hedged) / len(body)) if body else 0.0
     notes = []
     if hedged:
@@ -267,7 +266,7 @@ def check_restated():
     for label, pats in RESTATED.items():
         hits = [p for p, t in corpus.items() if any(re.search(x, t, re.I) for x in pats)]
         # files whose job is to state results do not count as drift
-        drift = [h for h in hits if not any(h.startswith(l) for l in LEGITIMATE_HOMES)]
+        drift = [h for h in hits if not any(h.startswith(home) for home in LEGITIMATE_HOMES)]
         if len(drift) > 3:
             notes.append('restated in %d non-record files: %s -- %s' %
                          (len(drift), label, ', '.join(sorted(d.split('/')[-1] for d in drift))))
@@ -291,7 +290,7 @@ def check_discoverable():
         name = os.path.basename(f)
         if name not in body:
             out.append(('fail', 'references/%s is named neither in SKILL.md nor in '
-                                 'references/routing.md -- nothing will load it' % name))
+                                'references/routing.md -- nothing will load it' % name))
     return out
 
 
@@ -349,23 +348,23 @@ def main():
 
     if args.json:
         print(json.dumps({
-            'findings': [{'level': l, 'message': m} for l, m in findings],
+            'findings': [{'level': lvl, 'message': m} for lvl, m in findings],
             'notes': notes,
             'index_lines': n_idx,
             'total_lines': content,
             'token_estimate': toks,
         }, indent=2))
     else:
-        for l, m in findings:
-            print('%s %s' % ({'ok': '  ok  ', 'warn': ' WARN ', 'fail': ' FAIL '}[l], m))
+        for lvl, m in findings:
+            print('%s %s' % ({'ok': '  ok  ', 'warn': ' WARN ', 'fail': ' FAIL '}[lvl], m))
         for m in notes:
             print(' note  %s' % m)
-        n_fail = sum(1 for l, _ in findings if l == 'fail')
-        n_warn = sum(1 for l, _ in findings if l == 'warn')
+        n_fail = sum(1 for lvl, _ in findings if lvl == 'fail')
+        n_warn = sum(1 for lvl, _ in findings if lvl == 'warn')
         print()
         print('== budget: %d failure(s), %d warning(s), %d note(s) ==' % (n_fail, n_warn, len(notes)))
 
-    n_bad = sum(1 for l, _ in findings if l == 'fail' or (args.strict and l == 'warn'))
+    n_bad = sum(1 for lvl, _ in findings if lvl == 'fail' or (args.strict and lvl == 'warn'))
     return 1 if n_bad else 0
 
 

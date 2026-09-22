@@ -299,7 +299,7 @@ def static_js_deps(path):
     except OSError as exc:
         return [], 'OSError: %s' % exc
     # strip line comments cheaply; a require() inside a string is not worth the parser
-    body = '\n'.join(l.split('//')[0] for l in src.splitlines())
+    body = '\n'.join(ln.split('//')[0] for ln in src.splitlines())
     return sorted(set(re.findall(r"""require\(\s*['"]([^'"]+)['"]\s*\)""", body))), None
 
 
@@ -429,15 +429,15 @@ def device_report(serial=None):
 
     # leftover forwards and proxies
     rc, fwd = run(['adb', '-s', tgt, 'forward', '--list'], timeout=15)
-    out['forwards'] = [l for l in fwd.splitlines() if l.strip()][:10]
+    out['forwards'] = [ln for ln in fwd.splitlines() if ln.strip()][:10]
     rc, prox = run(['adb', '-s', tgt, 'shell', 'settings get global http_proxy'], timeout=15)
     out['http_proxy'] = prox.strip()[:120]
 
     # is a frida server already running on device? (a common source of "the app
     # suddenly detects instrumentation" while you believe nothing is attached)
     rc, ps = run(['adb', '-s', tgt, 'shell', 'ps -A'], timeout=20)
-    hits = [l for l in ps.splitlines()
-            if 'frida' in l.lower() and 'grep' not in l.lower()]
+    hits = [ln for ln in ps.splitlines()
+            if 'frida' in ln.lower() and 'grep' not in ln.lower()]
     out['device_frida_processes'] = [h.strip()[:140] for h in hits[:6]]
     return out
 

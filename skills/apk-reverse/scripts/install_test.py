@@ -29,7 +29,6 @@ Useful flags
 Exit code is 0 only when the app launched AND both pid samples agree.
 """
 import argparse
-import os
 import re
 import subprocess
 import sys
@@ -73,22 +72,28 @@ def main():
     a = ap.parse_args()
 
     s = a.serial
-    print('[0] devices:'); print(adb(['devices', '-l']))
+    print('[0] devices:')
+    print(adb(['devices', '-l']))
 
     if a.uninstall_first:
-        print('[1] uninstall'); print(su('am force-stop %s; pm uninstall %s' % (a.pkg, a.pkg), s))
+        print('[1] uninstall')
+        print(su('am force-stop %s; pm uninstall %s' % (a.pkg, a.pkg), s))
     stage = '/data/local/tmp/_skill_stage.apk'
-    print('[2] push'); print(adb(['push', a.apk, stage], s))
-    print('[3] install'); print(su('pm install -r -t -d %s' % stage, s))
+    print('[2] push')
+    print(adb(['push', a.apk, stage], s))
+    print('[3] install')
+    print(su('pm install -r -t -d %s' % stage, s))
 
     for perm in a.grant:
         p = perm if perm.startswith('android.permission.') else 'android.permission.' + perm
         su('pm grant %s %s' % (a.pkg, p), s)
 
-    print('[4] clear logcat'); adb(['logcat', '-c'], s)
+    print('[4] clear logcat')
+    adb(['logcat', '-c'], s)
     comp = '%s/%s' % (a.pkg, a.activity if a.activity.startswith('.') or '.' in a.activity
                       else a.activity)
-    print('[5] launch'); print(sh('am start -n %s' % comp, s))
+    print('[5] launch')
+    print(sh('am start -n %s' % comp, s))
 
     time.sleep(6)
     p1 = sh('pidof %s' % a.pkg, s).strip()

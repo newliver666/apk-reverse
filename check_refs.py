@@ -186,7 +186,7 @@ def main():
 
             target_name = m.group('file')
             if target_name is None:
-                target_text, target_list = text, [path]
+                target_text = text
                 target_label = where
             else:
                 candidates = [c for c in by_name.get(target_name, [])

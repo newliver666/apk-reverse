@@ -317,7 +317,8 @@ RULE_SPECS = [
     (
         "token_env_assignment", "token", "an inline API-key/token/secret assignment",
         "strong",
-        r'\b(?:API_?KEY|APIKEY|ACCESS_?TOKEN|AUTH_?TOKEN|SECRET_?KEY|SECRET|PASSWORD|PASSWD|BEARER_?TOKEN)\s*[=:]\s*["\']?([A-Za-z0-9_\-./+]{12,})',
+        r'\b(?:API_?KEY|APIKEY|ACCESS_?TOKEN|AUTH_?TOKEN|SECRET_?KEY|SECRET|PASSWORD|PASSWD|'
+        r'BEARER_?TOKEN)\s*[=:]\s*["\']?([A-Za-z0-9_\-./+]{12,})',
         None,
     ),
     (
@@ -328,7 +329,8 @@ RULE_SPECS = [
     (
         "appkey_assignment", "appkey", "an SDK appkey/appsecret assignment with a literal value",
         "strong",
-        r'\b(?:APPKEY|APP_KEY|appSecretKey|AppSecret|APP_SECRET|SECRET_KEY|UMENG_APPKEY|com\.tencent\.map\.api\.KEY)\b\s*[=:]\s*["\']?([A-Za-z0-9_\-]{8,})',
+        r'\b(?:APPKEY|APP_KEY|appSecretKey|AppSecret|APP_SECRET|SECRET_KEY|UMENG_APPKEY|'
+        r'com\.tencent\.map\.api\.KEY)\b\s*[=:]\s*["\']?([A-Za-z0-9_\-]{8,})',
         None,
     ),
     (
@@ -370,6 +372,7 @@ def build_rules():
             "exempt": exempt,
         })
     return rules
+
 
 # --------------------------------------------------------------------------------------
 # Walking

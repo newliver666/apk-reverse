@@ -28,7 +28,6 @@ Usage:
 """
 import json
 import os
-import re
 import sys
 
 
@@ -93,7 +92,8 @@ def main():
             fail += 0 if found else 1
             continue
         okk, msg = patch_one(full, p['method'], p['registers'], p['body'])
-        print('[%s] %s :: %s  (%s)' % ('OK' if okk else 'FAIL', p['file'], p['method'].split('(')[0].replace('.method ', ''), msg))
+        print('[%s] %s :: %s  (%s)' % ('OK' if okk else 'FAIL', p['file'],
+                                       p['method'].split('(')[0].replace('.method ', ''), msg))
         ok += 1 if okk else 0
         fail += 0 if okk else 1
     print('\npatched=%d failed=%d%s' % (ok, fail, ' [dry-run]' if dry else ''))

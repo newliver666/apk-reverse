@@ -25,7 +25,6 @@ On the root README:
 import ast
 import os
 import re
-import re
 import subprocess
 import sys
 

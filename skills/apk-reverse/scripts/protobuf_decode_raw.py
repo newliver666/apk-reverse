@@ -470,13 +470,11 @@ def analyse_payload(chunk, depth, ctx, path, offset):
         return cands, 'empty'
 
     # --- nested message -------------------------------------------------
-    nested_ok = False
     if depth < ctx.max_depth:
         sub = Ctx(ctx.max_depth, ctx.expand, silent=True)
         sub_fields, nxt, status = walk(chunk, 0, n, depth + 1, sub, path,
                                        analyse=False)
         if status == 'end_of_buffer' and nxt == n and not sub.errors and sub_fields:
-            nested_ok = True
             cands.append({
                 'kind': 'nested_message',
                 'confidence': 0.85,
@@ -771,7 +769,6 @@ def load_input(args):
 
     if args.input is None or args.input == '-':
         data = sys.stdin.buffer.read()
-        source = 'stdin'
         try:
             text = data.decode('utf-8')
         except UnicodeDecodeError:
@@ -1059,8 +1056,8 @@ def _fixtures():
     group = tag(8, 3) + tag(1, 0) + encode_varint(5) + tag(8, 4)
     non_canonical = tag(1, 0) + b'\x96\x81\x00'
     overflow = tag(1, 0) + bytes([0xFF] * 9) + bytes([0x7F])
-    two_msgs = tag(1, 0) + encode_varint(1) + ld(2, b'ab') + \
-               tag(1, 0) + encode_varint(2) + ld(2, b'cd')
+    two_msgs = (tag(1, 0) + encode_varint(1) + ld(2, b'ab') +
+                tag(1, 0) + encode_varint(2) + ld(2, b'cd'))
     fixed_len = encode_varint(len(main)) + main
     # (name, payload, expectations, round-trip expectation)
     # round-trip is 'match' for every fixture that re-encodes canonically, and
@@ -1125,8 +1122,8 @@ def selftest(args):
     for name, payload, _e, rt in fixtures:
         checks += 1
         frames = _fixture_frames(name, payload)
-        tree = {'frames': [{'fields': walk(payload, s, e, 0, Ctx(6), 'f',
-                                          analyse=True)[0]}
+        tree = {'frames': [{'fields': walk(payload, s, e, 0, Ctx(6),
+                                           'f', analyse=True)[0]}
                            for s, e, _p in frames]}
         report = {'fields': 0, 'identical': 0, 'mismatched': []}
         out = reencode_tree(tree, report)

@@ -24,7 +24,6 @@ import argparse
 import glob
 import json
 import os
-import re
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +33,7 @@ REFS = os.path.join(SKILL_DIR, 'references')
 SCRIPTS = os.path.join(SKILL_DIR, 'scripts')
 ROUTE = os.path.join(REFS, 'routing.md')
 
+
 # A markdown table separator row: pipes, dashes, colons and spaces, and at least one dash. Tested on
 # the row's *cells*, not the whole line -- every data row also starts and ends with `|`, so any
 # whole-line pattern loose enough to accept a separator also accepts every data row, and the reverse
@@ -41,6 +41,7 @@ ROUTE = os.path.join(REFS, 'routing.md')
 def is_separator(row):
     cells = [c for c in row.strip().strip('|').split('|')]
     return bool(cells) and all(c.strip() and set(c.strip()) <= set('-:') for c in cells)
+
 
 # Headings are matched by prefix: they contain an em dash, and comparing against an ASCII hyphen
 # silently reports "table not found" instead of failing.

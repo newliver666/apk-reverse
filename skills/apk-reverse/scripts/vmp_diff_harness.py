@@ -1323,12 +1323,13 @@ def cmd_compare(args):
         })
     seen = set(pairs)
     for op in sorted(set(dexutil.OP_NAMES) - seen):
+        reason = UNREACHABLE.get(op) or (
+            "the original never emits this opcode, so there is no "
+            "known-plaintext instance to read a substitution from")
         undetermined.append({
             "orig": op, "orig_hex": "0x%02x" % op,
             "name": dexutil.OP_NAMES[op],
-            "reason": UNREACHABLE.get(op) or
-                      "the original never emits this opcode, so there is no "
-                      "known-plaintext instance to read a substitution from",
+            "reason": reason,
         })
 
     # reverse direction: a private byte claimed by two different originals

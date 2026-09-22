@@ -135,13 +135,10 @@ class Dex(object):
             return
         try:
             file_size = self._u32(0x20)
-            map_off = self._u32(0x34)
             string_ids_size = self._u32(0x38)
             string_ids_off = self._u32(0x3C)
             type_ids_size = self._u32(0x40)
             type_ids_off = self._u32(0x44)
-            proto_ids_size = self._u32(0x48)
-            proto_ids_off = self._u32(0x4C)
             method_ids_size = self._u32(0x58)
             method_ids_off = self._u32(0x5C)
             class_defs_size = self._u32(0x60)

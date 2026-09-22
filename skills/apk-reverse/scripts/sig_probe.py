@@ -28,9 +28,6 @@ Notes
 """
 
 import argparse
-import io
-import struct
-import subprocess
 import sys
 import time
 import zipfile

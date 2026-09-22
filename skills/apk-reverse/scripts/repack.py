@@ -854,7 +854,6 @@ def _write_aligned_zip(out_path, plan):
 
 def _emit_filler(out, offset, size):
     """Insert a stored, zero-filled entry of exactly `size` payload bytes."""
-    import struct
     import zlib
     name_b = FILLER_NAME.encode('utf-8')
     payload = b'\x00' * size
@@ -1422,7 +1421,6 @@ def main():
     args = ap.parse_args()
 
     tools = resolve_tools(args)
-    signer_jar = args.signer_jar or os.environ.get('APK_SIGNER_JAR', 'uber-apk-signer.jar')
 
     split_mode = bool(args.split_dir or args.split)
     if not split_mode:

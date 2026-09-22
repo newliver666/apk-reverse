@@ -69,44 +69,44 @@ def parse(text):
                  "frames": [], "regs": {}, "raw": []}
         # walk up a little to pick up pid/cmdline/uptime printed just before
         for j in range(max(0, i - 25), i):
-            l = lines[j]
-            mm = PID_RE.search(l)
+            ln = lines[j]
+            mm = PID_RE.search(ln)
             if mm and "pid" not in block:
                 block["pid"], block["tid"], block["tname"], block["proc"] = mm.groups()
-            mm = PROC_RE.search(l)
+            mm = PROC_RE.search(ln)
             if mm and "proc" not in block:
                 block["proc"] = mm.group(1)
-            mm = UPTIME_RE.search(l)
+            mm = UPTIME_RE.search(ln)
             if mm:
                 block["uptime"] = mm.group(1)
-            if "Cause:" in l and "cause" not in block:
-                block["cause"] = l.split("Cause:", 1)[1].strip()
+            if "Cause:" in ln and "cause" not in block:
+                block["cause"] = ln.split("Cause:", 1)[1].strip()
         # walk down through the dump
         j = i
         while j < len(lines) and j < i + 120:
-            l = lines[j]
-            if j > i + 3 and SIGNAL_RE.search(l) and j > i + 3:
+            ln = lines[j]
+            if j > i + 3 and SIGNAL_RE.search(ln) and j > i + 3:
                 break
-            block["raw"].append(l.strip())
-            mm = PID_RE.search(l)
+            block["raw"].append(ln.strip())
+            mm = PID_RE.search(ln)
             if mm and "pid" not in block:
                 block["pid"], block["tid"], block["tname"], block["proc"] = mm.groups()
-            mm = PROC_RE.search(l)
+            mm = PROC_RE.search(ln)
             if mm and "proc" not in block:
                 block["proc"] = mm.group(1)
-            mm = UPTIME_RE.search(l)
+            mm = UPTIME_RE.search(ln)
             if mm:
                 block["uptime"] = mm.group(1)
-            if "Cause:" in l and "cause" not in block:
-                block["cause"] = l.split("Cause:", 1)[1].strip()
-            mm = FRAME_RE.search(l)
+            if "Cause:" in ln and "cause" not in block:
+                block["cause"] = ln.split("Cause:", 1)[1].strip()
+            mm = FRAME_RE.search(ln)
             if mm:
                 # Backtrace lines look like either of:
                 #   #00 pc 00000000000128cc  /data/app/.../lib/arm64/libfoo.so
                 #   #02 pc 00000000000cccd0  /apex/.../libc.so (__pthread_start+256)
                 # The path is group(3); anything after it is a symbol in parens.
                 path = mm.group(3)
-                rest = l.split(path, 1)[1].strip() if path in l else ""
+                rest = ln.split(path, 1)[1].strip() if path in ln else ""
                 sym = ""
                 m2 = re.search(r"\(([^)]+)\)", rest)
                 if m2:
@@ -118,9 +118,9 @@ def parse(text):
             # Register dumps put several registers on one line, so collect all of
             # them rather than only the leading one.
             for k, v in re.findall(r"\b([xX]\d{1,2}|sp|lr|pc|pst)\s+([0-9a-fA-F]{8,16})\b",
-                                   l.replace("F DEBUG   :", " ")):
+                                   ln.replace("F DEBUG   :", " ")):
                 block["regs"][k] = int(v, 16)
-            if "backtrace:" in l:
+            if "backtrace:" in ln:
                 pass
             j += 1
         i = j if j > i else i + 1

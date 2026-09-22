@@ -76,7 +76,8 @@ def main() -> int:
         ("python", "all scripts"),
     ):
         found = shutil.which(tool)
-        r.add(OK if found else WARN, "host:" + tool, found or "not on PATH", "" if found else "install it if you need " + why)
+        r.add(OK if found else WARN, "host:" + tool, found or "not on PATH",
+              "" if found else "install it if you need " + why)
     for tool in ("apksigner", "zipalign", "aapt", "aapt2"):
         found = shutil.which(tool)
         r.add(OK if found else INFO, "host:" + tool, found or "not on PATH",
@@ -143,7 +144,8 @@ def main() -> int:
             trans.append("%s=%s" % (probe, v))
     r.add(WARN if trans else OK, "device:translation",
           "; ".join(trans) if trans else "no ARM translation declared",
-          "native arm libraries run through a translator here: timing differs and some native checks misbehave" if trans else "")
+          "native arm libraries run through a translator here: timing differs and "
+          "some native checks misbehave" if trans else "")
     if re.search(r"^1$", sh("getprop ro.kernel.qemu").strip()):
         r.add(INFO, "device:type", "emulator (ro.kernel.qemu=1)",
               "final verification belongs on the real ABI the user will run")
@@ -161,7 +163,8 @@ def main() -> int:
         drift = abs(int(dev_epoch) - int(__import__("time").time()))
         r.add(OK if drift < 120 else WARN, "clock",
               "device/host drift %ds" % drift,
-              "" if drift < 120 else "an expired/wrong certificate can be nothing but this clock; fix before TLS triage")
+              "" if drift < 120 else
+              "an expired/wrong certificate can be nothing but this clock; fix before TLS triage")
 
     # ---- leftover state that fakes a failure -----------------------------
     proxy = sh("settings get global http_proxy").strip()
@@ -207,7 +210,8 @@ def main() -> int:
                       "this is the ABI the package manager chose for THIS device")
             maps = su("cat /proc/$(pidof %s | awk '{print $1}')/maps 2>/dev/null | head -1" % a.pkg)
             if maps.strip():
-                r.add(INFO, "target:running", "process is running", "prefer a clean cold start before measuring anything")
+                r.add(INFO, "target:running", "process is running",
+                      "prefer a clean cold start before measuring anything")
             else:
                 r.add(OK, "target:running", "not running", "")
 
@@ -230,7 +234,7 @@ def main() -> int:
 def finish(r: Report, as_json: bool) -> int:
     if as_json:
         print(json.dumps({"worst": r.worst(),
-                          "rows": [dict(level=l, area=ar, detail=d, fix=f) for l, ar, d, f in r.rows]},
+                          "rows": [dict(level=lv, area=ar, detail=d, fix=f) for lv, ar, d, f in r.rows]},
                          indent=2, ensure_ascii=False))
         return 1 if r.worst() == BLOCKER else 0
 
